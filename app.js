@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require("morgan");
 const app = express() //creates an express app
+const { db, Page, User  } = require('./models');
 
 module.exports = app;
 
@@ -12,8 +13,20 @@ app.get("/", (req, res)=>{
     console.log('hello world');
   })
 
-  const PORT = 3000;
 
+db.authenticate() 
+  .then(() => { 
+    console.log('connected to the database'); 
+})
+
+const PORT = 3000;
+
+const init = async () => {
+  await db.sync({force: true});
+  // make sure that you have a PORT constant
   app.listen(PORT, () => {
-    console.log(`App listening in port ${PORT}`);
+    console.log(`Server is listening on port ${PORT}!`);
   });
+}
+
+init();
